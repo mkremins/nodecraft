@@ -1,6 +1,7 @@
 var mc = require('minecraft-protocol');
 var fs = require('fs');
 var events = require('./events.js');
+var storage = require('./storage.js');
 var config = require('./config.json');
 
 var server = mc.createServer(config.server);
@@ -9,6 +10,8 @@ var api = {
   before: events.before,
   on: events.on,
   after: events.after,
+  save: storage.save,
+  load: storage.load,
   server: server,
   log: console.log,
   broadcast: broadcast
