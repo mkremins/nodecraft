@@ -28,7 +28,7 @@ function CancellableEvent() {
   this._modifiers = [];
 }
 
-CancellableEvent.prototype = NonCancellableEvent.prototype;
+CancellableEvent.prototype = new NonCancellableEvent();
 CancellableEvent.prototype.constructor = CancellableEvent;
 
 CancellableEvent.prototype.addModifier = function(handler, filter) {

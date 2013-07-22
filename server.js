@@ -57,12 +57,16 @@ function handleConnect(client) {
   client.on('end', handleDisconnect(client));
   client.on(0x03, handleChat(client));
 
-  broadcast(client.username + ' has joined the game');
+  events.fire('join', {
+    player: client
+  });
 }
 
 function handleDisconnect(client) {
-  return function() {
-    broadcast(client.username + ' left the game');
+  return function(data) {
+    events.fire('quit', {
+      player: client
+    });
   };
 }
 
