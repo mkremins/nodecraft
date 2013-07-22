@@ -110,8 +110,6 @@ function fire(eventType, data) {
 }
 
 module.exports = {
-  NonCancellableEvent: NonCancellableEvent,
-  CancellableEvent: CancellableEvent,
   before: before,
   on: on,
   after: after,
