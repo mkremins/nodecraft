@@ -1,4 +1,5 @@
 var mc = require('minecraft-protocol');
+var fs = require('fs');
 var events = require('./events.js');
 
 var server = mc.createServer({
@@ -8,9 +9,23 @@ var server = mc.createServer({
   port: 25565
 });
 
-events.before('command', logCommand);
-events.on('command', named('stop'), stopServer);
-events.after('command', displayHelp);
+var api = {
+  before: events.before,
+  on: events.on,
+  after: events.after,
+  server: server,
+  console: console
+};
+
+console.log('\nLoading plugins...\n');
+var plugin;
+fs.readdirSync(__dirname + '/plugins').forEach(function(filename) {
+  plugin = require('./plugins/' + filename);
+  plugin.enable(api);
+  var pluginName = plugin.name || filename.split('.')[0];
+  console.log('  *  Loaded ./plugins/' + filename + ' as \'' + pluginName + '\'');
+});
+console.log('\nAll plugins loaded!\n');
 
 server.on('login', handleConnect);
 
@@ -90,26 +105,4 @@ function broadcast(message, sender) {
   for (var clientId in server.clients) {
     server.clients[clientId].write(0x03, { message: JSON.stringify(chat) });
   }
-}
-
-///////////////////////////////////////
-
-function logCommand(command) {
-  console.log(command.sender.username + ': /' + command.name + ' ' + command.args);
-}
-
-function named(name) {
-  return function(command) {
-    return command.name == name;
-  };
-}
-
-function stopServer(command) {
-  server.close();
-  command.consumed = true;
-  return command;
-}
-
-function displayHelp(command) {
-  // TODO display help
 }
