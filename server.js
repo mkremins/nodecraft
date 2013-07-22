@@ -1,4 +1,5 @@
 var mc = require('minecraft-protocol');
+var events = require('./events.js');
 
 var server = mc.createServer({
   'online-mode': false,
@@ -7,19 +8,9 @@ var server = mc.createServer({
   port: 25565
 });
 
-var restrictableEvents = {
-  chat:    [],
-  command: [],
-  join:    []
-}, observableEvents = {
-  chat:    [],
-  command: [],
-  join:    [],
-  quit:    []
-};
-
-onlyAllow('command', ifSenderHasPermission('core.stop'), when({name: 'stop'}));
-on('command', stopServer, when({name: 'stop'}));
+events.before('command', logCommand);
+events.on('command', named('stop'), stopServer);
+events.after('command', displayHelp);
 
 server.on('login', handleConnect);
 
@@ -64,7 +55,7 @@ function handleChat(client) {
       for (var i = 1; i < split.length; i++) {
         args.push(split[i]);
       }
-      fireEvent('command', {
+      events.fire('command', {
         name: split[0].substr(1),
         args: args,
         sender: client
@@ -72,64 +63,6 @@ function handleChat(client) {
     } else {
       broadcast(message, client);
     }
-  };
-}
-
-///////////////////////////////////////
-
-function onlyAllow(eventType, eventPrecondition, eventFilter) {
-  var preconditions = restrictableEvents[eventType];
-  if (preconditions) {
-    preconditions.push({
-      allows: eventPrecondition,
-      accepts: eventFilter
-    });
-  } else {
-    // TODO no such event type
-  }
-}
-
-function on(eventType, eventMonitor, eventFilter) {
-  var monitors = observableEvents[eventType];
-  if (monitors) {
-    monitors.push({
-      notify: eventMonitor,
-      accepts: eventFilter
-    });
-  } else {
-    // TODO no such event type
-  }
-}
-
-function fireEvent(eventType, event) {
-  if (restrictableEvents[eventType].every(function(precondition) {
-    return (precondition.accepts ? precondition.accepts(event) : true) ? precondition.allows(event) : true;
-  })) {
-    var monitor, monitors = observableEvents[eventType];
-    for (var index in monitors) {
-      monitor = monitors[index];
-      if (monitor.accepts ? monitor.accepts(event) : true) {
-        monitor.notify(event);
-      }
-    }
-  }
-}
-
-function when(conditions) {
-  return function(event) {
-    for (var name in conditions) {
-      if (conditions[name] != event[name]) {
-        return false;
-      }
-    }
-    return true;
-  };
-}
-
-function ifSenderHasPermission(permission) {
-  return function(command) {
-    console.log('testing permission for ' + command.name + ' on ' + command.sender.username);
-    return true; // TODO
   };
 }
 
@@ -159,6 +92,24 @@ function broadcast(message, sender) {
   }
 }
 
-function stopServer() {
+///////////////////////////////////////
+
+function logCommand(command) {
+  console.log(command.sender.username + ': /' + command.name + ' ' + command.args);
+}
+
+function named(name) {
+  return function(command) {
+    return command.name == name;
+  };
+}
+
+function stopServer(command) {
   server.close();
+  command.consumed = true;
+  return command;
+}
+
+function displayHelp(command) {
+  // TODO display help
 }
