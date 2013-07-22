@@ -14,7 +14,8 @@ var api = {
   on: events.on,
   after: events.after,
   server: server,
-  console: console
+  log: console.log,
+  broadcast: broadcast
 };
 
 console.log('\nLoading plugins...\n');
@@ -76,7 +77,10 @@ function handleChat(client) {
         sender: client
       });
     } else {
-      broadcast(message, client);
+      events.fire('chat', {
+        message: message,
+        sender: client
+      });
     }
   };
 }
@@ -94,8 +98,6 @@ function broadcast(message, sender) {
     senderName = 'Server';
     translate = 'chat.type.announcement';
   }
-
-  console.log(logMessage);
 
   var chat = {
     translate: translate,

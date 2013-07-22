@@ -1,12 +1,12 @@
-var cconsole;
+var log;
 
 function enable(api) {
-	cconsole = api.console;
+	log = api.log;
 	api.before('command', logCommand);
 }
 
 function logCommand(command) {
-	cconsole.log(command.sender.username + ': /' + command.name + ' ' + command.args);
+	log(command.sender.username + ': /' + command.name + ' ' + command.args);
 }
 
 module.exports = {
