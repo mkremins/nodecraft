@@ -1,13 +1,9 @@
 var mc = require('minecraft-protocol');
 var fs = require('fs');
 var events = require('./events.js');
+var config = require('./config.json');
 
-var server = mc.createServer({
-  'online-mode': false,
-  encryption: false,
-  host: 'localhost',
-  port: 25565
-});
+var server = mc.createServer(config.server);
 
 var api = {
   before: events.before,

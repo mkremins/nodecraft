@@ -1,0 +1,8 @@
+{
+	"server": {
+		"online-mode": false,
+		"encryption": false,
+		"host": "localhost",
+		"port": 25565
+	}
+}
