@@ -18,7 +18,10 @@ var api = {
   broadcast: broadcast
 };
 
-console.log('\nLoading plugins...\n');
+console.log('\nNodecraft v0.1.0a');
+console.log('========================================\n');
+
+console.log('Loading plugins...\n');
 var plugin;
 fs.readdirSync(__dirname + '/plugins').forEach(function(filename) {
   plugin = require('./plugins/' + filename);
