@@ -94,21 +94,19 @@ function handleChat(client) {
 ///////////////////////////////////////
 
 function broadcast(message, sender) {
-  var logMessage, senderName, translate;
+  var chat;
   if (sender) {
+    chat = {
+      translate: 'chat.type.text',
+      using: [sender.username, message]
+    };
     senderName = sender.username;
     logMessage = '<' + senderName + '> ' + message;
-    translate = 'chat.type.text';
   } else {
-    logMessage = message;
-    senderName = 'Server';
-    translate = 'chat.type.announcement';
+    chat = {
+      text: message
+    };
   }
-
-  var chat = {
-    translate: translate,
-    using: [senderName, message]
-  };
 
   for (var clientId in server.clients) {
     server.clients[clientId].write(0x03, { message: JSON.stringify(chat) });
