@@ -1,6 +1,6 @@
 var mc = require('minecraft-protocol');
-var fs = require('fs');
 var events = require('./events.js');
+var plugins = require('./plugins.js');
 var storage = require('./storage.js');
 var config = require('./config.json');
 
@@ -20,15 +20,7 @@ var api = {
 console.log('\nNodecraft v0.1.0a');
 console.log('========================================\n');
 
-console.log('Loading plugins...\n');
-var plugin;
-fs.readdirSync(__dirname + '/plugins').forEach(function(filename) {
-  plugin = require('./plugins/' + filename);
-  plugin.enable(api);
-  var pluginName = plugin.name || filename.split('.')[0];
-  console.log('  *  Loaded ./plugins/' + filename + ' as \'' + pluginName + '\'');
-});
-console.log('\nAll plugins loaded!\n');
+plugins.load('plugins', api);
 
 server.on('login', handleConnect);
 
