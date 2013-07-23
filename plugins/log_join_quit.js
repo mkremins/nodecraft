@@ -7,11 +7,11 @@ function enable(api) {
 }
 
 function logJoin(join) {
-	log(join.player.getName() + ' has joined the game');
+	log(join.player.name + ' has joined the game');
 }
 
 function logQuit(quit) {
-	log(quit.player.getName() + ' left the game');
+	log(quit.player.name + ' left the game');
 }
 
 module.exports = {

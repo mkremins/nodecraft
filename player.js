@@ -1,9 +1,9 @@
 var events = require('./events.js');
-var storage = require('./storage.js');
 
 function Player(client) {
 	this._client = client;
-	this._pos = {}, this._facing = {};
+	this.name = client.username;
+	this.pos = {}, this.facing = {};
 
 	client.write(0x01, {
 		entityId: client.id,
@@ -15,10 +15,6 @@ function Player(client) {
 	});
 }
 
-Player.prototype.getName = function() {
-	return this._client.username;
-};
-
 Player.prototype.sendMessage = function(message) {
 	this._client.write(0x03, JSON.stringify({
 		text: message
@@ -29,20 +25,20 @@ Player.prototype.teleport = function(pos, facing) {
 	if (facing) {
 		this._client.write(0x0d, {
 			x: pos.x,
-			y: pos.y,
-			stance: pos.stance,
+			y: pos.y + 1.62,
+			stance: pos.y,
 			z: pos.z,
 			yaw: facing.yaw,
 			pitch: facing.pitch,
-			onGround: pos.onGround
+			onGround: true
 		});
 	} else {
 		this._client.write(0x0b, {
 			x: pos.x,
-			y: pos.y,
-			stance: pos.stance,
+			y: pos.y + 1.62,
+			stance: pos.y,
 			z: pos.z,
-			onGround: pos.onGround
+			onGround: true
 		});
 	}
 };
@@ -51,23 +47,6 @@ Player.prototype.teleport = function(pos, facing) {
 
 function handleConnect(client) {
 	var player = new Player(client);
-
-	storage.load('players', client.username, function(data) {
-		if (data) {
-			player.teleport(data._pos, data._facing);
-		} else {
-			player.teleport({
-				x: 0,
-				y: 1.62,
-				stance: 0,
-				z: 0,
-				onGround: true
-			}, {
-				yaw: 0,
-				pitch: 0
-			});
-		}
-	});
 
 	client.on('end', handleDisconnect(player));
 	client.on(0x03, handleChatOrCommand(player));
@@ -81,11 +60,11 @@ function handleConnect(client) {
 }
 
 function handleDisconnect(player) {
-  return function(data) {
-    events.fire('quit', {
-      player: player
-    });
-  };
+	return function(data) {
+		events.fire('quit', {
+			player: player
+		});
+	};
 }
 
 function handleChatOrCommand(player) {
@@ -112,26 +91,26 @@ function handleChatOrCommand(player) {
 
 function handleMove(player) {
 	return function(data) {
-		player._pos.x = data.x;
-		player._pos.y = data.y;
-		player._pos.z = data.z;
+		player.pos.x = data.x;
+		player.pos.y = data.y - 1.62;
+		player.pos.z = data.z;
 	};
 }
 
 function handleLook(player) {
 	return function(data) {
-		player._facing.yaw = data.yaw;
-		player._facing.pitch = data.pitch;
+		player.facing.yaw = data.yaw;
+		player.facing.pitch = data.pitch;
 	};
 }
 
 function handleMoveAndLook(player) {
 	return function(data) {
-		player._pos.x = data.x;
-		player._pos.y = data.y;
-		player._pos.z = data.z;
-		player._facing.yaw = data.yaw;
-		player._facing.pitch = data.pitch;
+		player.pos.x = data.x;
+		player.pos.y = data.y - 1.62;
+		player.pos.z = data.z;
+		player.facing.yaw = data.yaw;
+		player.facing.pitch = data.pitch;
 	};
 }
 

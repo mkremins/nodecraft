@@ -6,7 +6,7 @@ function enable(api) {
 }
 
 function logChat(chat) {
-	log('<' + chat.sender.username + '> ' + chat.message);
+	log('<' + chat.sender.name + '> ' + chat.message);
 }
 
 module.exports = {

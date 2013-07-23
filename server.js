@@ -32,7 +32,7 @@ function broadcast(message, sender) {
   if (sender) {
     chat = {
       translate: 'chat.type.text',
-      using: [sender.getName(), message]
+      using: [sender.name, message]
     };
   } else {
     chat = {

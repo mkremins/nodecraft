@@ -2,7 +2,13 @@ var fs = require('fs');
 var stores = {};
 
 function DataStore(name) {
-	this._dirpath = __dirname + '/' + name;
+	var dirpath = __dirname + '/' + name;
+	this._dirpath = dirpath;
+	fs.exists(dirpath, function(exists) {
+		if (!exists) {
+			fs.mkdir(dirpath);
+		}
+	});
 }
 
 DataStore.prototype._makeFilepath = function(key) {
