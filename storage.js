@@ -12,7 +12,7 @@ DataStore.prototype._makeFilepath = function(key) {
 DataStore.prototype.get = function(key, callback) {
 	fs.readFile(this._makeFilepath(key), 'utf8', function(err, data) {
 		if (err) {
-			throw err; // TODO actually handle the error
+			callback(null); // TODO
 		} else {
 			callback(JSON.parse(data));
 		}

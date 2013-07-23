@@ -1,4 +1,5 @@
 var mc = require('minecraft-protocol');
+var bindPlayer = require('./player.js');
 var events = require('./events.js');
 var plugins = require('./plugins.js');
 var storage = require('./storage.js');
@@ -22,66 +23,7 @@ console.log('========================================\n');
 
 plugins.load('plugins', api);
 
-server.on('login', handleConnect);
-
-///////////////////////////////////////
-
-function handleConnect(client) {
-  client.write(0x01, {
-    entityId: client.id,
-    levelType: 'default',
-    gameMode: 1,
-    dimension: 0,
-    difficulty: 2,
-    maxPlayers: server.maxPlayers
-  });
-  client.write(0x0d, {
-    x: 0,
-    y: 1.62,
-    stance: 0,
-    z: 0,
-    yaw: 0,
-    pitch: 0,
-    onGround: true
-  });
-
-  client.on('end', handleDisconnect(client));
-  client.on(0x03, handleChat(client));
-
-  events.fire('join', {
-    player: client
-  });
-}
-
-function handleDisconnect(client) {
-  return function(data) {
-    events.fire('quit', {
-      player: client
-    });
-  };
-}
-
-function handleChat(client) {
-  return function(data) {
-    var message = data.message;
-    if (message.charAt(0) == '/') {
-      var args = [], split = message.split(' ');
-      for (var i = 1; i < split.length; i++) {
-        args.push(split[i]);
-      }
-      events.fire('command', {
-        name: split[0].substr(1),
-        args: args,
-        sender: client
-      });
-    } else {
-      events.fire('chat', {
-        message: message,
-        sender: client
-      });
-    }
-  };
-}
+server.on('login', bindPlayer);
 
 ///////////////////////////////////////
 
@@ -90,10 +32,8 @@ function broadcast(message, sender) {
   if (sender) {
     chat = {
       translate: 'chat.type.text',
-      using: [sender.username, message]
+      using: [sender.getName(), message]
     };
-    senderName = sender.username;
-    logMessage = '<' + senderName + '> ' + message;
   } else {
     chat = {
       text: message

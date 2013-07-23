@@ -6,7 +6,7 @@ function enable(api) {
 }
 
 function logCommand(command) {
-	log(command.sender.username + ': /' + command.name + ' ' + command.args);
+	log(command.sender.getName() + ': /' + command.name + ' ' + command.args);
 }
 
 module.exports = {
