@@ -1,10 +1,7 @@
-var load, save;
-
 function enable(api) {
-	load = api.load, save = api.save;
 	api.after('join', function(joining) {
 		var player = joining.player;
-		load(__dirname + '/../players', player.name, function(data) {
+		api.load(__dirname + '/../players', player.name, function(data) {
 			if (data) {
 				player.teleport(data.pos, data.facing);
 			} else {
@@ -19,7 +16,7 @@ function enable(api) {
 	api.after('quit', function(quitting) {
 		var player = quitting.player;
 		var pos = player.pos, facing = player.facing;
-		save(__dirname + '/../players', player.name, {
+		api.save(__dirname + '/../players', player.name, {
 			pos: { x: pos.x, y: pos.y, z: pos.z},
 			facing: { yaw: facing.yaw, pitch: facing.pitch }
 		});
