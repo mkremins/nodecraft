@@ -1,0 +1,20 @@
+{
+	"name": "nodecraft",
+	"version": "v0.1.0",
+	"description": "Extensible node.js Minecraft server implementation",
+	"keywords": ["minecraft"],
+
+	"author": "Max Kreminski",
+	"homepage": "http://github.com/mkremins/nodecraft",
+	"bugs": "http://github.com/mkremins/nodecraft/issues",
+	"repository": {
+		"type": "git",
+		"url": "http://github.com/mkremins/nodecraft.git"
+	},
+
+	"main": "./index.js",
+	"dependencies": {
+		"jigsaw": "~0.1",
+		"minecraft-protocol": "~0.11"
+	}
+}
