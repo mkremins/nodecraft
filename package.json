@@ -11,6 +11,7 @@
 		"type": "git",
 		"url": "http://github.com/mkremins/nodecraft.git"
 	},
+	"license": "MIT",
 
 	"main": "./lib/server.js",
 	"dependencies": {

@@ -5,7 +5,7 @@ nodecraft is an open-source Minecraft server implementation written in JavaScrip
 
 Much of nodecraft's functionality is implemented in plugins. Heavy internal use of the plugin API – which, in keeping with node's strengths, is primarily asynchronous and event-driven – ensures that the server remains moddable, modular, and extensible. Additionally, it enables any developer with enough knowledge of the API to create a plugin of her own to begin hacking on almost any part of the server with relative ease.
 
-installation
+install + run
 ---------------------------------------
 
 To install nodecraft and run a server instance, simply:
@@ -15,3 +15,8 @@ To install nodecraft and run a server instance, simply:
     node lib/server.js
 
 Note that nodecraft is nowhere near stable or feature-complete. Unless you want to hack on the code, I'd advise against trying to run your own instance for now.
+
+license
+---------------------------------------
+
+nodecraft is made available under the [MIT License](http://opensource.org/licenses/MIT). See [LICENSE](LICENSE) for details.
