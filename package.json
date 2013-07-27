@@ -12,7 +12,7 @@
 		"url": "http://github.com/mkremins/nodecraft.git"
 	},
 
-	"main": "./index.js",
+	"main": "./lib/server.js",
 	"dependencies": {
 		"jigsaw": "~0.1",
 		"minecraft-protocol": "~0.11"
